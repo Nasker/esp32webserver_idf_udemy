@@ -9,6 +9,7 @@ var otaTimerVar =  null;
  */
 $(document).ready(function(){
 	getUpdateStatus();
+    setTemperatureInterval();
 });   
 
 /**
@@ -116,4 +117,18 @@ function otaRebootTimer()
     }
 }
 
+/**
+ * Gets Temperature from Temperate Sensor and displays it on the web page.
+ */
+function getTemperature(){
+    $.getJSON("/temperature.json", function(data){
+        $("#temperature_reading").text(data["temp"]);
+    }); 
+}
 
+/**
+ * Sets Interval for Temperature Sensor to update every 5 seconds.
+ */
+function setTemperatureInterval(){
+    setInterval(getTemperature, 5000);
+}

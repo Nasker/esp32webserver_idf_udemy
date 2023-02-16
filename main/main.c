@@ -5,6 +5,7 @@
 #include "nvs_flash.h"
 
 #include "wifi_app.h"
+#include "ds18b20_sensor.h"
 
 void app_main(void){
     // Initialize NVS
@@ -17,4 +18,5 @@ void app_main(void){
 
 	// Start Wifi
 	wifi_app_start();
+	DS18B20_task_start();
 }
