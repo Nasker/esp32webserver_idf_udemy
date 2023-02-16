@@ -1,0 +1,23 @@
+# VS Code
+.vscode/
+.settings/
+*.code-workspace
+
+# ESP-IDF
+build/
+components/*/build/
+sdkconfig
+sdkconfig.old
+partitions.csv
+partition_table.csv
+
+# C++
+*.o
+*.d
+*.a
+*.exe
+*.out
+
+# General
+.DS_Store
+Thumbs.db
