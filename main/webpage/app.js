@@ -3,6 +3,7 @@
  */
 var seconds 	= null;
 var otaTimerVar =  null;
+var wifiConnectInterval = null;
 
 /**
  * Initialize functions here.
@@ -10,6 +11,9 @@ var otaTimerVar =  null;
 $(document).ready(function(){
 	getUpdateStatus();
     setTemperatureInterval();
+    $("#connect_wifi").on("click", function(){
+        checkCredentials();
+    });
 });   
 
 /**
@@ -132,3 +136,103 @@ function getTemperature(){
 function setTemperatureInterval(){
     setInterval(getTemperature, 5000);
 }
+
+/**
+ * Clears the connection status interval.
+ */
+ function stopWifiConnectStatusInterval(){
+    if(wifiConnectInterval != null){
+        clearInterval(wifiConnectInterval);
+        wifiConnectInterval = null;
+    }   
+}
+
+/**
+ * Gets the WiFI connection status.
+ */
+function getWifiConnectStatus(){
+    var xhr = new XMLHttpRequest();
+    var requestURL = "/wifiConnectStatus";
+    xhr.open('POST', requestURL, false);
+    xhr.send('wifi_connect_status');
+
+    if (xhr.readyState == 4 && xhr.status == 200){
+        var response = JSON.parse(xhr.responseText);
+        document.getElementById("wifi_connect_status").innerHTML = "Connecting...";
+    }
+    if(response.wifi_connect_status == 2){
+        document.getElementById("wifi_connect_status").innerHTML = "<h4 class='rd'>Check credentials and compatibility!</h4>";
+        stopWifiConnectStatusInterval();
+    }
+    else if(response.wifi_connect_status == 3){
+        document.getElementById("wifi_connect_status").innerHTML = "<h4 class='gr'>Connection Success!!</h4>";
+        stopWifiConnectStatusInterval();
+    }
+}
+
+/**
+ * Starts the interval for checking the connection status.
+ */
+
+function startWifiConnectStatusInterval(){
+    wifiConnectInterval = setInterval(getWifiConnectStatus, 2800);
+}
+
+/**
+ * Connect WiFi function called using the credentials entered on the web page.
+ */
+function connectWifi(){
+    // Get the SSID and Password from the web page
+    selectSSID = $("#connect_ssid").val();
+    password = $("#connect_password").val();
+
+    $.ajax({
+        url: '/wifiConnect.json',
+        dataType: 'json',
+        method: 'POST',
+        cache: false,
+        headers : {'my-connect-ssid': selectSSID, 'my-connect-password': password},
+        data: {'timestamp': Date.now()}
+    });
+    startWifiConnectStatusInterval();
+}
+
+/**
+ * Checks the credentials entered on the web page.
+ */
+
+function checkCredentials(){
+    errorList = "";
+    credsOk = true;
+
+    selectSSID = $("#connect_ssid").val();
+    password = $("#connect_password").val();
+
+    if(selectSSID == ""){
+        errorList += "<h4 class='rd'> SSID is required </h4>";
+        credsOk = false;
+    }
+    if(password == ""){
+        errorList += "<h4 class='rd'> Password is required </h4>";
+        credsOk = false;
+    }
+    if(credsOK == false){
+        $("#wifi_connect_credentials_errors").html(errorList);
+    }
+    else{
+        $("#wifi_connect_credentials_errors").html("");
+        connectWifi();
+    }
+}
+
+/**
+ * Shows the WiFi password field if the box is checked.
+ */
+function showPassword(){
+    var x = document.getElementById("connect_password");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+} 

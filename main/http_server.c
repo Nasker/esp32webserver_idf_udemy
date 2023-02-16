@@ -18,6 +18,9 @@
 // Tag used for ESP serial console messages
 static const char TAG[] = "http_server";
 
+//Wifi connect status
+static int g_wifi_connect_status = NONE;
+
 // Firmware update status
 static int g_fw_update_status = OTA_UPDATE_PENDING;
 
@@ -88,7 +91,7 @@ static void http_server_monitor(void *parameter)
 			{
 				case HTTP_MSG_WIFI_CONNECT_INIT:
 					ESP_LOGI(TAG, "HTTP_MSG_WIFI_CONNECT_INIT");
-
+					g_wifi_connect_status = HTTP_WIFI_STATUS_CONNECTING;
 					break;
 
 				case HTTP_MSG_WIFI_CONNECT_SUCCESS:
@@ -105,13 +108,13 @@ static void http_server_monitor(void *parameter)
 					ESP_LOGI(TAG, "HTTP_MSG_OTA_UPDATE_SUCCESSFUL");
 					g_fw_update_status = OTA_UPDATE_SUCCESSFUL;
 					http_server_fw_update_reset_timer();
-
+					g_wifi_connect_status = HTTP_WIFI_STATUS_CONNECT_SUCCESS;
 					break;
 
 				case HTTP_MSG_OTA_UPDATE_FAILED:
 					ESP_LOGI(TAG, "HTTP_MSG_OTA_UPDATE_FAILED");
 					g_fw_update_status = OTA_UPDATE_FAILED;
-
+					g_wifi_connect_status = HTTP_WIFI_STATUS_CONNECT_FAILED;
 					break;
 
 				default:
@@ -325,6 +328,17 @@ static esp_err_t http_server_temperature_json_handler(httpd_req_t *req){
 	return ESP_OK;
 }
 
+/*
+* wifiConnect.json handler is invoked when the user clicks the "Connect" button on the web page.
+* and handles receiving the SSID and password from the web page.
+* @param req HTTP request for which the uri needs to be handled
+* @return ESP_OK
+*/
+
+static esp_err_t http_server_wifi_json_handler(httpd_req_t *req){
+	ESP_LOGI(TAG, "/wifiConnect.json requested");
+	size_t len_ssid = 0, len_pass = 0;
+}
 
 /**
  * Sets up the default httpd server configuration.
@@ -438,6 +452,24 @@ static httpd_handle_t http_server_configure(void)
 				.user_ctx = NULL
 		};
 		httpd_register_uri_handler(http_server_handle, &temperature_json);
+
+		// register wifiConnect.json handler
+		httpd_uri_t wifi_connect_json = {
+				.uri = "/wifiConnect.json",
+				.method = HTTP_POST,
+				.handler = http_server_wifi_json_handler,
+				.user_ctx = NULL
+		};
+		httpd_register_uri_handler(http_server_handle, &wifi_connect_json);
+
+		// register wifiConnectStatus.json handler
+		httpd_uri_t wifi_connect_status_json = {
+				.uri = "/wifiConnectStatus.json",
+				.method = HTTP_POST,
+				.handler = http_server_wifi_connect_status_json_handler,
+				.user_ctx = NULL
+		};
+		httpd_register_uri_handler(http_server_handle, &wifi_connect_status_json);
 
 		return http_server_handle;
 	}

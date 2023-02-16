@@ -33,5 +33,18 @@
 		<div id="temperature_reading"></div>
 	</div>
 	<hr> 
+	<div id="WifiConnect">
+		<h2>Wifi Connection</h2>
+		<section> 
+			<input type="text" maxlength="32" id="connect_ssid" placeholder="Enter SSID" value="" />
+			<input type="password" maxlength="64" id="connect_pass" placeholder="Enter Password" value="" />
+			<input type="checkbox" onclick="showPassword()" /> Show Password
+		</section>
+		<div class="buttons">
+			<input id="connect_wifi" type="button" value="Connect" />
+		</div>
+		<div id="wifi_connect_credentials_errors"></div>
+		<h4 id="wifi_connect_status"></h4>
+	</div>
 	</body>
 <html>

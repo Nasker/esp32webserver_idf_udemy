@@ -15,8 +15,8 @@ void app_main(void){
 		ret = nvs_flash_init();
 	}
 	ESP_ERROR_CHECK(ret);
-
-	// Start Wifi
+	
+	// Start wifi and ds18b20 tasks
 	wifi_app_start();
 	DS18B20_task_start();
 }

@@ -22,6 +22,12 @@
 // Tag used for ESP serial console messages
 static const char TAG [] = "wifi_app";
 
+// Used for returning the WiFi configuration
+wifi_config_t *wifi_config; = NULL;
+
+// Used to track the number of retries to connect to the WiFi network
+static int g_retry_number = 0;
+
 // Queue handle used to manipulate the main queue of events
 static QueueHandle_t wifi_app_queue_handle;
 
@@ -214,6 +220,10 @@ BaseType_t wifi_app_send_message(wifi_app_message_e msgID)
 	return xQueueSend(wifi_app_queue_handle, &msg, portMAX_DELAY);
 }
 
+wifi_config_t* wifi_app_get_wifi_config(void){
+	return wifi_config;
+}
+
 void wifi_app_start(void)
 {
 	ESP_LOGI(TAG, "STARTING WIFI APPLICATION");
@@ -223,6 +233,10 @@ void wifi_app_start(void)
 
 	// Disable default WiFi logging messages
 	esp_log_level_set("wifi", ESP_LOG_NONE);
+
+	//Allocate memory for the wifi config
+	wifi_config = (wifi_config_t *) malloc(sizeof(wifi_config_t));
+	memset(wifi_config, 0x00, sizeof(wifi_config_t)); 
 
 	// Create message queue
 	wifi_app_queue_handle = xQueueCreate(3, sizeof(wifi_app_queue_message_t));

@@ -64,6 +64,12 @@ BaseType_t wifi_app_send_message(wifi_app_message_e msgID);
  */
 void wifi_app_start(void);
 
+/**
+ * Gets the wifi configuration
+ */
+wifi_config_t* wifi_app_get_wifi_config(void);
+
+
 #endif /* MAIN_WIFI_APP_H_ */
 
 
