@@ -2,6 +2,7 @@
 .vscode/
 .settings/
 *.code-workspace
+*.devcontainer
 
 # ESP-IDF
 build/
