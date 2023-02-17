@@ -27,18 +27,20 @@
 		<h4 id="ota_update_status"></h4>
 	</div>
 	<hr>
+		
 	<div id="TemperatureSensor">
-		<h2>Temperature Sensor Reading</h2>
+		<h2>Temperature Sensor Readings</h2>
 		<label for="temperature_reading">Temperature: </label>
-		<div id="temperature_reading"></div>
+		<div id="temperature_reading"></div> 
 	</div>
-	<hr> 
-	<div id="WifiConnect">
-		<h2>Wifi Connection</h2>
-		<section> 
-			<input type="text" maxlength="32" id="connect_ssid" placeholder="Enter SSID" value="" />
-			<input type="password" maxlength="64" id="connect_pass" placeholder="Enter Password" value="" />
-			<input type="checkbox" onclick="showPassword()" /> Show Password
+	<hr>
+		
+	<div id="WiFiConnect">
+		<h2>ESP32 WiFi Connect</h2>
+		<section>
+			<input id="connect_ssid" type="text" maxlength="64" placeholder="SSID" value="">
+			<input id="connect_pass" type="password" maxlength="64" placeholder="Password" value="">
+			<input type="checkbox" onclick="showPassword()">Show Password
 		</section>
 		<div class="buttons">
 			<input id="connect_wifi" type="button" value="Connect" />
@@ -46,5 +48,17 @@
 		<div id="wifi_connect_credentials_errors"></div>
 		<h4 id="wifi_connect_status"></h4>
 	</div>
+	<div id="ConnectionInfo">
+		<section>
+			<div id="connected_ap_label"></div> <div id="connected_ap"></div>
+		</section>
+		<div id="ip_address_label"></div> <div id="wifi_connect_ip"></div>
+		<div id="netmask_label"></div> <div id="wifi_netmask"></div>
+		<div id="gateway_label"></div> <div id="wifi_connect_gw"></div>
+		<div class="buttons">
+			<input id="disconnect_wifi" type="button" value="Disconnect" />
+		</div>
+	</div>
+	<hr>
 	</body>
 <html>
