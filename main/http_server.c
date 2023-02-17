@@ -111,6 +111,13 @@ static void http_server_monitor(void *parameter)
 
 					break;
 
+				case HTTP_MSG_WIFI_USER_DISCONNECT:
+					ESP_LOGI(TAG, "HTTP_MSG_WIFI_USER_DISCONNECT");
+
+					g_wifi_connect_status = HTTP_WIFI_STATUS_DISCONNECTED;
+
+					break;
+
 				case HTTP_MSG_OTA_UPDATE_SUCCESSFUL:
 					ESP_LOGI(TAG, "HTTP_MSG_OTA_UPDATE_SUCCESSFUL");
 					g_fw_update_status = OTA_UPDATE_SUCCESSFUL;
@@ -408,24 +415,23 @@ static esp_err_t http_server_wifi_connect_status_json_handler(httpd_req_t *req)
 }
 
 /**
-  * wifiConnectInfo.json handler updates the web page with connection info
+ * wifiConnectInfo.json handler updates the web page with connection information.
  * @param req HTTP request for which the uri needs to be handled.
  * @return ESP_OK
  */
-
 static esp_err_t http_server_get_wifi_connect_info_json_handler(httpd_req_t *req)
 {
 	ESP_LOGI(TAG, "/wifiConnectInfo.json requested");
 
 	char ipInfoJSON[200];
-
 	memset(ipInfoJSON, 0, sizeof(ipInfoJSON));
 
 	char ip[IP4ADDR_STRLEN_MAX];
 	char netmask[IP4ADDR_STRLEN_MAX];
 	char gw[IP4ADDR_STRLEN_MAX];
 
-	if (g_wifi_connect_status == HTTP_WIFI_STATUS_CONNECT_SUCCESS){
+	if (g_wifi_connect_status == HTTP_WIFI_STATUS_CONNECT_SUCCESS)
+	{
 		wifi_ap_record_t wifi_data;
 		ESP_ERROR_CHECK(esp_wifi_sta_get_ap_info(&wifi_data));
 		char *ssid = (char*)wifi_data.ssid;
@@ -438,6 +444,7 @@ static esp_err_t http_server_get_wifi_connect_info_json_handler(httpd_req_t *req
 
 		sprintf(ipInfoJSON, "{\"ip\":\"%s\",\"netmask\":\"%s\",\"gw\":\"%s\",\"ap\":\"%s\"}", ip, netmask, gw, ssid);
 	}
+
 	httpd_resp_set_type(req, "application/json");
 	httpd_resp_send(req, ipInfoJSON, strlen(ipInfoJSON));
 
