@@ -408,7 +408,7 @@ static esp_err_t http_server_wifi_connect_status_json_handler(httpd_req_t *req)
 }
 
 /**
- * wifiConnectInfo.json handler updates the web page with connection info
+  * wifiConnectInfo.json handler updates the web page with connection info
  * @param req HTTP request for which the uri needs to be handled.
  * @return ESP_OK
  */
@@ -428,7 +428,7 @@ static esp_err_t http_server_get_wifi_connect_info_json_handler(httpd_req_t *req
 	if (g_wifi_connect_status == HTTP_WIFI_STATUS_CONNECT_SUCCESS){
 		wifi_ap_record_t wifi_data;
 		ESP_ERROR_CHECK(esp_wifi_sta_get_ap_info(&wifi_data));
-		char *ssid = (char *)wifi_data.ssid;
+		char *ssid = (char*)wifi_data.ssid;
 
 		esp_netif_ip_info_t ip_info;
 		ESP_ERROR_CHECK(esp_netif_get_ip_info(esp_netif_sta, &ip_info));
@@ -436,7 +436,7 @@ static esp_err_t http_server_get_wifi_connect_info_json_handler(httpd_req_t *req
 		esp_ip4addr_ntoa(&ip_info.netmask, netmask, IP4ADDR_STRLEN_MAX);
 		esp_ip4addr_ntoa(&ip_info.gw, gw, IP4ADDR_STRLEN_MAX);
 
-		sprintf(ipInfoJSON, "{\"ip\":%s, \"netmask\":\"%s\", \"gw\":\"%s\", \"ap\":\"%s\"}", ip, netmask, gw, ssid);
+		sprintf(ipInfoJSON, "{\"ip\":\"%s\",\"netmask\":\"%s\",\"gw\":\"%s\",\"ap\":\"%s\"}", ip, netmask, gw, ssid);
 	}
 	httpd_resp_set_type(req, "application/json");
 	httpd_resp_send(req, ipInfoJSON, strlen(ipInfoJSON));
@@ -445,20 +445,18 @@ static esp_err_t http_server_get_wifi_connect_info_json_handler(httpd_req_t *req
 }
 
 /**
- * wifiDisconnect.json handler responds by sending a message to the wifi application to disconnect
+ * wifiDisconnect.json handler responds by sending a message to the Wifi application to disconnect.
  * @param req HTTP request for which the uri needs to be handled.
  * @return ESP_OK
  */
+static esp_err_t http_server_wifi_disconnect_json_handler(httpd_req_t *req)
+{
+	ESP_LOGI(TAG, "wifiDisconect.json requested");
 
-
-static esp_err_t http_server_wifi_disconnect_json_handler(httpd_req_t *req){
-	ESP_LOGI(TAG, "/wifiDisconnect.json requested");
-
-	wifi_app_send_message(WIFI_APP_MSG_USER_REQUESTED_DISCONNECT);
+	wifi_app_send_message(WIFI_APP_MSG_USER_REQUESTED_STA_DISCONNECT);
 
 	return ESP_OK;
 }
-
 
 /**
  * Sets up the default httpd server configuration.
