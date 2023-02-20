@@ -6,6 +6,7 @@
 
 #include "wifi_app.h"
 #include "ds18b20_sensor.h"
+#include "wifi_reset_button.h"
 
 void app_main(void){
     // Initialize NVS
@@ -18,5 +19,6 @@ void app_main(void){
 	
 	// Start wifi and ds18b20 tasks
 	wifi_app_start();
+	wifi_reset_button_config();
 	DS18B20_task_start();
 }
