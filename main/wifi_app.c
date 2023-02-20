@@ -20,6 +20,9 @@
 #include "tasks_common.h"
 #include "wifi_app.h"
 
+// Wifi applicatio callback
+static wifi_connected_event_callback_t wifi_connected_event_cb;
+
 // Tag used for ESP serial console messages
 static const char TAG [] = "wifi_app";
 
@@ -289,6 +292,11 @@ static void wifi_app_task(void *pvParameters)
 					{
 						xEventGroupClearBits(wifi_app_event_group, WIFI_APP_CONNECTING_FROM_HTTP_SERVER_BIT);
 					}
+					
+					// Check for connection callback
+					if(wifi_connected_event_cb){
+						wifi_app_call_callback();
+					}
 
 					break;
 
@@ -358,6 +366,14 @@ BaseType_t wifi_app_send_message(wifi_app_message_e msgID)
 wifi_config_t* wifi_app_get_wifi_config(void)
 {
 	return wifi_config;
+}
+
+void wifi_app_set_callback(wifi_connected_event_callback_t cb){
+	wifi_connected_event_cb = cb;
+}
+
+void wifi_app_call_callback(void){
+	wifi_connected_event_cb();
 }
 
 void wifi_app_start(void)
