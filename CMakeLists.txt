@@ -9,6 +9,11 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/UncleRus/esp-idf-lib.git
 )
 FetchContent_MakeAvailable(espidflib)
-set(EXTRA_COMPONENT_DIRS ${espidflib_SOURCE_DIR}/components "esp-aws-iot")
+set(EXTRA_COMPONENT_DIRS "$ENV{IDF_PATH}/examples/common_components/protocol_examples_common"
+						 "esp-aws-iot/libraries/backoffAlgorithm"
+						 "esp-aws-iot/libraries/coreMQTT"
+						 "esp-aws-iot/libraries/common/posix_compat"
+             ${espidflib_SOURCE_DIR}/components
+	)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(udemy_esp32_webserver)
