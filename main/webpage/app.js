@@ -13,6 +13,7 @@ $(document).ready(function(){
 	startTemperatureSensorInterval();
 	startLocalTimeInterval();
 	getConnectInfo();
+	getSSID();
 	$("#connect_wifi").on("click", function(){
 		checkCredentials();
 	}); 
@@ -319,5 +320,15 @@ function startLocalTimeInterval(){
 function getLocalTime(){
 	$.getJSON('/localTime.json', function(data) {
 		$("#local_time").text(data["time"]);
+	});
+}
+
+/**
+ * Gets the ESP32 Access point SSID to display on the web page.
+ */
+
+function getSSID(){
+	$.getJSON('/apSSID.json', function(data) {
+		$("#ap_ssid").text(data["ssid"]);
 	});
 }
