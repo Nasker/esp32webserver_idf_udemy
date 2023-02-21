@@ -4,6 +4,7 @@
 #include "esp_log.h"
 #include "nvs_flash.h"
 
+#include "aws_iot.h"
 #include "wifi_app.h"
 #include "ds18b20_sensor.h"
 #include "wifi_reset_button.h"
@@ -14,6 +15,7 @@ static const char TAG[] = "main";
 void wifi_application_connected_events(void){
 	ESP_LOGI(TAG, "Wifi application connected!!");
 	sntp_time_sync_task_start();
+	aws_iot_start(); 
 }
 
 void app_main(void){
