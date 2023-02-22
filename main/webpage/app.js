@@ -11,6 +11,7 @@ var wifiConnectInterval = null;
 $(document).ready(function(){
 	getUpdateStatus();
 	startTemperatureSensorInterval();
+	startDistanceSensorInterval();
 	startLocalTimeInterval();
 	getConnectInfo();
 	getSSID();
@@ -331,4 +332,20 @@ function getSSID(){
 	$.getJSON('/apSSID.json', function(data) {
 		$("#ap_ssid").text(data["ssid"]);
 	});
+}
+
+/**
+ *  Gets distance from the ultrasonic sensor and displays it on the web page.
+ */
+function getDistanceSensorValues(){
+	$.getJSON('/distance.json', function(data) {
+		$("#distance_reading").text(data["distance"]);
+	});
+}
+
+/**
+ * Sets the interval for getting the updated ultrasonic sensor values.
+ */
+function startDistanceSensorInterval(){
+	setInterval(getDistanceSensorValues, 1000);    
 }

@@ -12,6 +12,7 @@
 #include "sys/param.h"
 
 #include "ds18b20_sensor.h"
+#include "ultrasonic_sensor.h"
 #include "http_server.h"
 #include "sntp_time_sync.h"
 #include "tasks_common.h"
@@ -358,6 +359,26 @@ static esp_err_t http_server_get_temperature_readings_json_handler(httpd_req_t *
 	return ESP_OK;
 }
 
+
+/**
+ * Distance sensor readings JSON handler responds with Distance sensor data
+ * @param req HTTP request for which the uri needs to be handled
+ * @return ESP_OK
+ */
+static esp_err_t http_server_get_distance_readings_json_handler(httpd_req_t *req)
+{
+	ESP_LOGI(TAG, "/distance.json requested");
+
+	char distanceJSON[100];
+
+	sprintf(distanceJSON, "{\"distance\":\"%.5f\"}", getDistance());
+
+	httpd_resp_set_type(req, "application/json");
+	httpd_resp_send(req, distanceJSON, strlen(distanceJSON));
+
+	return ESP_OK;
+}
+
 /**
  * wifiConnect.json handler is invoked after the connect button is pressed
  * and handles receiving the SSID and password entered by the user
@@ -630,6 +651,15 @@ static httpd_handle_t http_server_configure(void)
 				.user_ctx = NULL
 		};
 		httpd_register_uri_handler(http_server_handle, &temperature_json);
+
+		// register distanceSensor.json handler
+		httpd_uri_t distance_json = {
+				.uri = "/distance.json",
+				.method = HTTP_GET,
+				.handler = http_server_get_distance_readings_json_handler,
+				.user_ctx = NULL
+		};
+		httpd_register_uri_handler(http_server_handle, &distance_json);
 
 		// register wifiConnect.json handler
 		httpd_uri_t wifi_connect_json = {
