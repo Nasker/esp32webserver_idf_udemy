@@ -12,7 +12,7 @@
 #include "sys/param.h"
 
 #include "ds18b20_sensor.h"
-#include "ultrasonic_sensor.h"
+#include "mcp9600_sensor.h"
 #include "http_server.h"
 #include "sntp_time_sync.h"
 #include "tasks_common.h"
@@ -359,12 +359,32 @@ static esp_err_t http_server_get_temperature_readings_json_handler(httpd_req_t *
 	return ESP_OK;
 }
 
+/**
+ * Thermocouple sensor readings JSON handler responds with Thermocouple sensor data
+ * @param req HTTP request for which the uri needs to be handled
+ * @return ESP_OK
+ */
+static esp_err_t http_server_get_thermocouple_readings_json_handler(httpd_req_t *req)
+{
+	ESP_LOGI(TAG, "/thermocouple.json requested");
+
+	char thermocoupleJSON[100];
+
+	sprintf(thermocoupleJSON, "{\"thermocouple\":\"%.1f\"}", getThermocouple());
+
+	httpd_resp_set_type(req, "application/json");
+	httpd_resp_send(req, thermocoupleJSON, strlen(thermocoupleJSON));
+
+	return ESP_OK;
+}
+
 
 /**
  * Distance sensor readings JSON handler responds with Distance sensor data
  * @param req HTTP request for which the uri needs to be handled
  * @return ESP_OK
  */
+/*
 static esp_err_t http_server_get_distance_readings_json_handler(httpd_req_t *req)
 {
 	ESP_LOGI(TAG, "/distance.json requested");
@@ -378,7 +398,7 @@ static esp_err_t http_server_get_distance_readings_json_handler(httpd_req_t *req
 
 	return ESP_OK;
 }
-
+*/
 /**
  * wifiConnect.json handler is invoked after the connect button is pressed
  * and handles receiving the SSID and password entered by the user
@@ -652,6 +672,15 @@ static httpd_handle_t http_server_configure(void)
 		};
 		httpd_register_uri_handler(http_server_handle, &temperature_json);
 
+				// register thermocoupleSensor.json handler
+		httpd_uri_t thermocouple_json = {
+				.uri = "/thermocouple.json",
+				.method = HTTP_GET,
+				.handler = http_server_get_thermocouple_readings_json_handler,
+				.user_ctx = NULL
+		};
+		httpd_register_uri_handler(http_server_handle, &thermocouple_json);
+/*
 		// register distanceSensor.json handler
 		httpd_uri_t distance_json = {
 				.uri = "/distance.json",
@@ -660,7 +689,7 @@ static httpd_handle_t http_server_configure(void)
 				.user_ctx = NULL
 		};
 		httpd_register_uri_handler(http_server_handle, &distance_json);
-
+*/
 		// register wifiConnect.json handler
 		httpd_uri_t wifi_connect_json = {
 				.uri = "/wifiConnect.json",

@@ -11,7 +11,7 @@ var wifiConnectInterval = null;
 $(document).ready(function(){
 	getUpdateStatus();
 	startTemperatureSensorInterval();
-	startDistanceSensorInterval();
+	startThermocoupleSensorInterval();
 	startLocalTimeInterval();
 	getConnectInfo();
 	getSSID();
@@ -146,6 +146,23 @@ function startTemperatureSensorInterval()
 	setInterval(getTemperatureSensorValues, 5000);    
 }
 
+/**
+ * Gets thermocouple sensor temperature values for display on the web page.
+ */
+function getThermocoupleSensorValues()
+{
+	$.getJSON('/thermocouple.json', function(data) {
+		$("#thermocouple_reading").text(data["thermocouple"]);
+	});
+}
+
+/**
+ * Sets the interval for getting the updated thermocouple sensor values.
+ */
+function startThermocoupleSensorInterval()
+{
+	setInterval(getThermocoupleSensorValues, 5000);
+}
 /**
  * Clears the connection status interval.
  */
@@ -332,20 +349,4 @@ function getSSID(){
 	$.getJSON('/apSSID.json', function(data) {
 		$("#ap_ssid").text(data["ssid"]);
 	});
-}
-
-/**
- *  Gets distance from the ultrasonic sensor and displays it on the web page.
- */
-function getDistanceSensorValues(){
-	$.getJSON('/distance.json', function(data) {
-		$("#distance_reading").text(data["distance"]);
-	});
-}
-
-/**
- * Sets the interval for getting the updated ultrasonic sensor values.
- */
-function startDistanceSensorInterval(){
-	setInterval(getDistanceSensorValues, 1000);    
 }
