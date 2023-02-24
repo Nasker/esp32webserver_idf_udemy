@@ -13,7 +13,7 @@
 
 /* 5 pins for 4 sensors */
 static struct { gpio_num_t sda, scl; } pins[SENSORS_COUNT] = {
-        { 23, 22 }
+        { 21, 22 }
 };
 
 static const char * const snames[] = {

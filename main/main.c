@@ -6,7 +6,6 @@
 
 #include "wifi_app.h"
 #include "ds18b20_sensor.h"
-#include "ultrasonic_sensor.h"
 #include "wifi_reset_button.h"
 #include "sntp_time_sync.h"
 
@@ -34,7 +33,6 @@ void app_main(void){
 	wifi_app_start();
 	wifi_reset_button_config();
 	DS18B20_task_start();
-	ultrasonic_task_start();
 
 	//Set connected event callback
 	wifi_app_set_callback(&wifi_application_connected_events);
