@@ -1,5 +1,4 @@
 /*
- * mcp9600.h
  *
  *  Created on: Feb 13, 2023
  *      Author: Nasker
